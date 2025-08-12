@@ -1,0 +1,10 @@
+{
+    "contactFormData":{
+        "name":"Srihari P",
+        "email":"srihari.p@gmail.com",
+        "subject":"Test Subject",
+        "message":"This is a test message for the contact form",
+        "successMessage":"",
+        "filePath":"VisualTestData/saleBanner.jpg"
+    }
+}
