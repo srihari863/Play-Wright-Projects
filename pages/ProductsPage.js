@@ -4,6 +4,8 @@ export class ProductsPage {
   constructor(page) {
     this.page = page;
     this.productList = this.page.locator('//div[contains(@class,"productinfo")]');
+    this.productImagelist = this.page.locator('//div[@class="product-image-wrapper"]');
+    this.productHidelist = this.page.locator('(//div[@class="product-overlay"]/following::a[@class="btn btn-default add-to-cart"])[1]');
     this.saleBanner = this.page.locator('//img[@id="sale_image"]');
     this.productNameList = this.page.locator('//div[contains(@class,"productinfo")]/p');
     this.viewProductButtons = this.page.locator('//a[contains(text(),"View Product")]');
@@ -159,8 +161,17 @@ export class ProductsPage {
     }
     throw new Error(`Product with name ${productName} not found`);
   }
-
-  async addProdcutToCartFromProductList(indux, quantity) {
+  async getProductImageList() {
+    const productNameList = [];
+    for (let i = 0; i < await this.productImagelist.count(); i++) {
+      const productName = await this.productImagelist.nth(i).textContent();
+      productNameList.push(productName.trim());
+    }
+    await this.productImagelist.hoover();
+    await this.productHidelist.toBeVisible();
+    await this.productHidelist.click();
+  }
+  async addProdcutToCartFromProductList(indux) {
     for (let i = 0; i < await this.addToCartButtons.count(); i++) {
       if (i === indux) {
         console.log(`Adding product at index ${i} to cart`);
