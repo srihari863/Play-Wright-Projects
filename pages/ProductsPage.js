@@ -5,7 +5,7 @@ export class ProductsPage {
     this.page = page;
     this.productList = this.page.locator('//div[contains(@class,"productinfo")]');
     this.productImagelist = this.page.locator('//div[@class="product-image-wrapper"]');
-    this.productHidelist = this.page.locator('(//div[@class="product-overlay"]/following::a[@class="btn btn-default add-to-cart"])[1]');
+    this.productHidelist = this.page.locator('//div[@class="overlay-content"]//a[@class="btn btn-default add-to-cart"][normalize-space()="Add to cart"]');
     this.saleBanner = this.page.locator('//img[@id="sale_image"]');
     this.productNameList = this.page.locator('//div[contains(@class,"productinfo")]/p');
     this.viewProductButtons = this.page.locator('//a[contains(text(),"View Product")]');
@@ -84,11 +84,11 @@ export class ProductsPage {
     for (let i = 0; i < productCount; i++) {
       const name = await this.productNameList.nth(i).textContent();
       if (name.trim() === productName) {
+        await this.viewProductButtons.nth(i).scrollIntoViewIfNeeded();
         await this.viewProductButtons.nth(i).click();
         return;
       }
     }
-    throw new Error(`Product with name ${productName} not found`);
   }
 
   async verifyProductDetatils() {
@@ -100,7 +100,6 @@ export class ProductsPage {
   }
 
   async addProdcutToCartFromDetails(quantity) {
-
     await this.quantityInput.fill(quantity.toString());
     await this.addToCartBtnInDetailsPage.click();
   }
@@ -162,13 +161,8 @@ export class ProductsPage {
     throw new Error(`Product with name ${productName} not found`);
   }
   async getProductImageList() {
-    const productNameList = [];
-    for (let i = 0; i < await this.productImagelist.count(); i++) {
-      const productName = await this.productImagelist.nth(i).textContent();
-      productNameList.push(productName.trim());
-    }
-    await this.productImagelist.hoover();
-    await this.productHidelist.toBeVisible();
+    await this.productImagelist.hover();
+    await this.productHidelist.scrollIntoViewIfNeeded();
     await this.productHidelist.click();
   }
   async addProdcutToCartFromProductList(indux) {

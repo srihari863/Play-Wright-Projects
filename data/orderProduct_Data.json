@@ -2,6 +2,7 @@
     "products": 
         {
         "productName": "Blue Top",
+        "productName2": "Stylish Dress",
         "productQty": "3",
         "productPrice": "$9.99",
         "productImage": "blue-top.jpg",

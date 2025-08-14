@@ -1,4 +1,5 @@
 // @ts-check
+import { fa } from '@faker-js/faker';
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -48,7 +49,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], 
-      viewport: { width: 1500, height: 750 }
+      viewport: { width: 1280, height: 720 }
     },
     },
 
