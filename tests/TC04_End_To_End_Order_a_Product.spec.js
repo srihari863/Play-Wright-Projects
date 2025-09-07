@@ -4,7 +4,6 @@ import loginData from '../data/login_Data.json';
 import orderProductData from '../data/orderProduct_Data.json';
 
 const orderData = orderProductData.products;
-test.describe.configure({ mode: 'serial' });
 test.setTimeout(120000);
 test.describe('End to End Order Product Test', () => {
   let pomManager;
