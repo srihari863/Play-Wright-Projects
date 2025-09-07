@@ -9,7 +9,7 @@ export class ContactUsFormPage {
     this.messageInput = this.page.getByPlaceholder('Your Message Here');
     this.uploadFileInput = this.page.locator('//input[@type="file"]');
     this.submitButton = this.page.getByRole('button', { name: 'Submit' });
-    this.successMessage = this.page.getByText('Success! Your details have been submitted successfully.');
+    this.successMessage = this.page.locator('div.status.alert.alert-success');
     this.errorMessage = this.page.getByText('Error! Please check your details and try again.');
     this.homeBtn = this.page.locator('(//a[@class="btn btn-success"])[1]');
   }

@@ -1,22 +1,52 @@
 export class PaymentPage {
   constructor(page) {
     this.page = page;
-    this.paymentBreadCrumb = this.page.locator('//ol[@class="breadcrumb"]/li[2]');
-    this.payAndConfirmOrderButton= this.page.locator('//button[@id="submit"]');
-    this.paymentHeading = this.page.locator('//h2[normalize-space()="Payment"]');
-    this.nameOnCard = this.page.locator('input[name="name_on_card"]');
-    this.cardNumbar = this.page.locator('input[name="card_number"]');
-    this.cvcNo = this.page.locator('input[name="cvc"]');
-    this.exiprationMonth = this.page.locator('input[name="expiry_month"]');
-    this.exiprationYear = this.page.locator('input[name="expiry_year"]');
-    this.successMessage = this.page.locator('//div[contains(text(),"Your order has been placed successfully!")]');
-    this.orderPlacedText = this.page.locator('//b[normalize-space()="Order Placed!"]');
-    this.congratulationsMesg= this.page.locator('//b[normalize-space()="Order Placed!"]/following::p[1]');
-    this.continueButton = this.page.locator('//a[normalize-space()="Continue"]');
-    this.dowloadInvoiceButton = this.page.locator('//a[normalize-space()="Download Invoice"]');
+    // Card payment form elements - using more general selectors
+    this.paymentForm = this.page.locator('form#payment-form, form.payment-form');
+    this.nameOnCard = this.page.locator('[placeholder*="Name on Card"], input[name*="name"], input[data-qa*="name"]');
+    this.cardNumber = this.page.locator("//input[@name='card_number']");
+    this.cvc = this.page.locator('[placeholder*="CVC"], input[name*="cvc"], input[data-qa*="cvc"]');
+    this.expiryMonth = this.page.locator('[placeholder*="MM"], input[name*="month"], input[data-qa*="month"]');
+    this.expiryYear = this.page.locator('[placeholder*="YYYY"], input[name*="year"], input[data-qa*="year"]');
+    this.payAndConfirmOrderButton = this.page.locator("//button[@id='submit']");
+
+    // Success elements
+    this.successMessage = this.page.locator('.alert-success');
+    this.orderPlacedHeading = this.page.locator('h2.title:has-text("Order Placed!")');
+    this.orderPlacedText = this.page.locator('h2.title:has-text("Order Placed!")'); // Same as orderPlacedHeading
+    this.congratulationsMessage = this.page.locator('p:has-text("Congratulations!")');
+    this.congratulationsMesg = this.page.locator('p:has-text("Congratulations!")'); // Same as congratulationsMessage
+    this.continueButton = this.page.locator('a:has-text("Continue")');
+    this.downloadInvoiceButton = this.page.locator('a:has-text("Download Invoice")');
+    this.dowloadInvoiceButton = this.page.locator('a:has-text("Download Invoice")'); // Alias for downloadInvoiceButton
+    
+    // Navigation elements
+    this.paymentBreadCrumb = this.page.locator('.breadcrumbs:has-text("Payment")');
+    this.paymentHeading = this.page.locator('h2.title:has-text("Payment")');
   }
 
   async fillPaymentDetails(name, cardNumber, cvc, month, year) {
+    await this.nameOnCard.fill(name);
+    await this.cardNumber.fill(cardNumber);
+    await this.cvc.fill(cvc);
+    await this.expiryMonth.fill(month);
+    await this.expiryYear.fill(year);
+  }
+
+  async waitForPaymentPage() {
+    await this.page.waitForLoadState('networkidle');
+    await this.paymentForm.waitFor({ state: 'visible', timeout: 30000 });
+    if (!(await this.paymentForm.isVisible())) {
+      throw new Error('Payment form is not visible');
+    }
+  }
+
+  async fillAndSubmitPayment(name, cardNumber, cvc, month, year) {
+    await this.fillPaymentDetails(name, cardNumber, cvc, month, year);
+    await this.submitPayment();
+  }
+
+  async enterCardDetails(name, cardNumber, cvc, month, year) {
     await this.enterNameOnCard(name);
     await this.enterCardNumber(cardNumber);
     await this.enterCVCNo(cvc);
@@ -51,18 +81,12 @@ export class PaymentPage {
     return await this.congratulationsMesg.textContent();
   }
   async clickOnContinueButton() {
-    if (await this.continueButton.isVisible()) {
-      await this.continueButton.click();
-    } else {
-      throw new Error('Continue button is not visible');
-    }
+    await this.continueButton.waitFor({ state: 'visible' });
+    await this.continueButton.click();
   }
   async clickOnDownloadInvoiceButton() {
-    if (await this.dowloadInvoiceButton.isVisible()) {
-      await this.dowloadInvoiceButton.click();
-    } else {
-      throw new Error('Download Invoice button is not visible');
-    }
+    await this.dowloadInvoiceButton.waitFor({ state: 'visible' });
+    await this.dowloadInvoiceButton.click();
   }
   async getPaymentBreadCrumbText() {
     await this.paymentBreadCrumb.waitFor({ state: 'visible' });

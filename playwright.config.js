@@ -1,4 +1,5 @@
 // @ts-check
+import { fa } from '@faker-js/faker';
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -15,7 +16,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -48,7 +49,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], 
-      viewport: { width: 1500, height: 750 }
+      viewport: { width: 1400, height: 800 }
     },
     },
 

@@ -3,7 +3,7 @@ import { POMMessage } from '../pages/POMManager';
 import loginData from '../data/login_Data.json';
 import contactFormData from '../data/contactForm_Data.json';
 
-const logindata = loginData.logindata;
+const BASE_URL = loginData.BASE_URL;
 const contactData = contactFormData.contactFormData;
 test.describe('Contact Us Tests', () => {
   let pomManager;
@@ -13,7 +13,8 @@ test.describe('Contact Us Tests', () => {
   test.beforeEach(async ({ page }) => {
     pomManager = new POMMessage(page);
     dashboardPage = pomManager.getDashboardPage();
-    await dashboardPage.navigateToHomePage(logindata.BASE_URL);
+    await dashboardPage.navigateToHomePage(BASE_URL);
+    
     await dashboardPage.verifyLogo();
     await dashboardPage.navigateToSignupLogin();
   });
@@ -25,7 +26,7 @@ test.describe('Contact Us Tests', () => {
     const loginPage = pomManager.getLoginPage();
     expect(dashboardPage.pageTitle).toBe('Automation Exercise');
     expect(dashboardPage.isSingupLoginLinkVisible()).toBeTruthy();
-    await loginPage.doLogin(logindata.username, logindata.password);
+    await loginPage.doLogin(loginData.users[0].username, loginData.users[0].password);
     await page.waitForTimeout(3000);
     // Verify successful login
     await dashboardPage.navigateToContactUs();
@@ -39,15 +40,20 @@ test.describe('Contact Us Tests', () => {
     );
     //upload a file
     await contactUsPage.uploadFile(contactData.filePath);
-    await contactUsPage.clickSubmitButton();
-    await page.waitForTimeout(3000); // Wait for the form submission to complete
-    // Handle alert dialog
+
+    // Set up alert handler before submitting
     page.on('dialog', async dialog => {
       console.log(`Dialog message: ${dialog.message()}`);
-      await dialog.accept(); // Closes the alert
+      await dialog.accept();
     });
+
+    await contactUsPage.clickSubmitButton();
+    await page.waitForTimeout(3000); // Wait for the form submission to complete
+    
+    // Verify success and navigation
     await contactUsPage.getSuccessMessage();
-    //await contactUsPage.navigateToHomePage();
-    //expect(await dashboardPage.verifyPageTitle()).toBeTruthy();
+    await contactUsPage.navigateToHomePage();
+    await page.waitForLoadState('domcontentloaded');
+    expect(await dashboardPage.verifyPageTitle()).toBeTruthy();
   });
 });  

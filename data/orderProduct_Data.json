@@ -2,7 +2,8 @@
     "products": 
         {
         "productName": "Blue Top",
-        "productQty": "3",
+        "productName2": "Stylish Dress",
+        "productQty": "1",
         "productPrice": "$9.99",
         "productImage": "blue-top.jpg",
         "productDescription": "A stylish blue top for casual wear."
