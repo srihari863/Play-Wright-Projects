@@ -2,7 +2,7 @@ export class CheckoutPage {
   constructor(page) {
     this.page = page;
     this.checkoutBreadCrumb = this.page.locator('//ol[@class="breadcrumb"]/li[2]');
-    this.placeOrderButton= this.page.locator('//a[normalize-space()="Place Order"]"]');
+    this.placeOrderButton = this.page.locator('//a[normalize-space()="Place Order"]');
     this.addressDetailsHeading = this.page.locator('//h2[normalize-space()="Address Details"]');
     this.yourDeliveryAddressHeading = this.page.locator('//h3[normalize-space()="Your delivery address"]');
     this.yourBillingAddressHeading = this.page.locator('//h3[normalize-space()="Your billing address"]');
@@ -12,12 +12,12 @@ export class CheckoutPage {
     this.deliveryAddressFnameLname = this.page.locator('//ul[@id="address_delivery"]//li[@class="address_firstname address_lastname"]');
     this.deliveryAddressAddress1 = this.page.locator('(//ul[@id="address_delivery"]//li[@class="address_address1 address_address2"])[1]');
     this.deliveryAddressCity = this.page.locator('//ul[@id="address_delivery"]//li[@class="address_city address_state_name address_postcode"]');
-    this.deliveryAddressCity = this.page.locator('//ul[@id="address_delivery"]//li[@class="address_country_name"]');
+    this.deliveryAddressCountry = this.page.locator('//ul[@id="address_delivery"]//li[@class="address_country_name"]');
     this.deliveryAddressPhoneNo = this.page.locator('//ul[@id="address_delivery"]//li[@class="address_phone"]');
     this.billingAddressFnameLname = this.page.locator('//ul[@id="address_invoice"]//li[@class="address_firstname address_lastname"]');
     this.billingAddressAddress1 = this.page.locator('(//ul[@id="address_invoice"]//li[@class="address_address1 address_address2"])[1]');
     this.billingAddressCity = this.page.locator('//ul[@id="address_invoice"]//li[@class="address_city address_state_name address_postcode"]');
-    this.billingAddressCity = this.page.locator('//ul[@id="address_invoice"]//li[@class="address_country_name"]');
+    this.billingAddressCountry = this.page.locator('//ul[@id="address_invoice"]//li[@class="address_country_name"]');
     this.billingAddressPhoneNo = this.page.locator('//ul[@id="address_invoice"]//li[@class="address_phone"]');
   }
   async isCheckoutBreadCrumbExists() {
@@ -45,11 +45,12 @@ export class CheckoutPage {
     await this.commentTextArea.fill(comment);
   }
   async clickOnPlaceOrderButton() {
-    if (await this.placeOrderButton.isVisible()) {
-      await this.placeOrderButton.click();
-    } else {
-      throw new Error('Place Order button is not visible');
-    }
+    await this.page.waitForLoadState('networkidle');
+    await this.placeOrderButton.waitFor({ state: 'visible', timeout: 30000 });
+    await Promise.all([
+      this.page.waitForNavigation({ waitUntil: 'networkidle' }),
+      this.placeOrderButton.click()
+    ]);
   }
   async getTotalAmount() {
     await this.totalAmount.waitFor({ state: 'visible' });
@@ -131,5 +132,20 @@ export class CheckoutPage {
       country: await this.getBillingAddressCountry(),
       phoneNo: await this.getBillingAddressPhoneNo()
     };
+  }
+
+  async verifyAddressDetails() {
+    const addressHeading = await this.getAddressDetailsHedingText();
+    const deliveryHeading = await this.getYourDeliveryAddressHeadingText();
+    const billingHeading = await this.getYourBillingAddressHeadingText();
+
+    return addressHeading.includes('Address Details') &&
+           deliveryHeading.includes('Your delivery address') &&
+           billingHeading.includes('Your billing address');
+  }
+
+  async verifyOrderDetails(productName, quantity) {
+    const reviewHeading = await this.getReviewYourOrderHeadingText();
+    return reviewHeading.includes('Review Your Order');
   }
 }   

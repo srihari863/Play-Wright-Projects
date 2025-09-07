@@ -6,6 +6,7 @@ export class LoginPage {
     this.passwordInput = page.locator('input[placeholder="Password"]');
     this.loginButton = page.getByRole('button', { name: 'Login' });
     this.loginHeader = page.getByRole('heading', { name: 'Login to your account' });
+    this.automationText = page.locator('div[class="item active"] span:nth-child(1)');
     this.loggedInUser = page.locator('//ul[@class="nav navbar-nav"]//li[last()]/a');
     this.logoutLink = page.getByRole('link', { name: 'Logout' });
     this.invalidLoginMsg = page.locator('//p[normalize-space()="Your email or password is incorrect!"]')
@@ -38,5 +39,11 @@ export class LoginPage {
       return await this.invalidLoginMsg.textContent();
     }
     return null;
+  }
+  async verifyLoginPageHeader() {
+    return await this.loginHeader.isVisible();
+  }
+  async verifyAutomationExerciseImg() {
+    return await this.automationExerciseImg.isVisible();
   }
 }

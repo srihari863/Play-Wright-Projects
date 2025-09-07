@@ -43,26 +43,18 @@ export class RegisterPage {
   }
  
   async isNewUserSignUpHeaderExist() {
-    await this.page.waitForLoadState('networkidle');
-    if (await this.newUserSignUpHeader.isVisible()) {
-      return await this.newUserSignUpHeader.textContent();
-    }
-    return null;
+    await this.newUserSignUpHeader.waitFor({ state: 'visible', timeout: 30000 });
+    return await this.newUserSignUpHeader.textContent();
   }
   async getExistingEmailSignupFailureMsg() {
-    await this.page.waitForLoadState('networkidle');
-    if (await this.existingEmailSignupFailureMsg.isVisible()) {
-      return await this.existingEmailSignupFailureMsg.textContent();
-    }
-    return null;
+    await this.existingEmailSignupFailureMsg.waitFor({ state: 'visible', timeout: 30000 });
+    return await this.existingEmailSignupFailureMsg.textContent();
   }
 
   async isEnterAccountInfoHeader() {
-    if (await this.enterAccountInfoHeader.isVisible()) {
-      return await this.enterAccountInfoHeader.textContent();
-    } 
-    return null;
-  } 
+    await this.enterAccountInfoHeader.waitFor({ state: 'visible', timeout: 30000 });
+    return await this.enterAccountInfoHeader.textContent();
+  }
 
   async selectTitle(title) {
     if (title === 'Mr.') {
@@ -110,11 +102,8 @@ export class RegisterPage {
   } 
 
   async verifyAccountCreationSuccess() {
-   
-    if (await this.accountCratedSuccessMessage.isVisible()) {
-      return await this.accountCratedSuccessMessage.textContent();
-    }
-    throw new Error('Account creation failed or success message not found');
+    await this.accountCratedSuccessMessage.waitFor({ state: 'visible', timeout: 30000 });
+    return await this.accountCratedSuccessMessage.textContent();
   } 
   async clickContinueButton() {
     await this.continueButton.click();

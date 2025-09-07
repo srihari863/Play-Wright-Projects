@@ -3,7 +3,7 @@ import { POMMessage } from '../pages/POMManager';
 import loginData from '../data/login_Data.json';
 const { faker } = require('@faker-js/faker');
 
-const logindata = loginData.logindata;
+const BASE_URL = loginData.BASE_URL;
 test.describe('Registration Tests', () => {
   let pomManager;
   let registerPage;
@@ -45,7 +45,7 @@ test.describe('Registration Tests', () => {
 
     pomManager = new POMMessage(page);
     dashboardPage = pomManager.getDashboardPage();
-    await dashboardPage.navigateToHomePage(logindata.BASE_URL);
+    await dashboardPage.navigateToHomePage(BASE_URL);
     await dashboardPage.verifyLogo();
     await dashboardPage.navigateToSignupLogin();
   });

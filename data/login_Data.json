@@ -1,8 +1,10 @@
 {
-    "logindata": {
-        "BASE_URL": "https://automationexercise.com/",
-        "username": "automation.p@gmail.com",
-        "password": "test@123",
-        "ivusername":"sriharip@gmail.com"
-    }
+    "BASE_URL": "https://automationexercise.com/",
+    "users": [
+        {
+            "username": "automation.p@gmail.com",
+            "password": "test@123",
+            "expected": "srihari"
+        }
+    ]
 }
